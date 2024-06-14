@@ -1,4 +1,10 @@
 import User from "../schemas/user.js";
+import {
+  isUsernameExists,
+  isPasswordsSimilar,
+  isValidEmail,
+} from "../utils/user.js";
+import { v4 as generateID } from "uuid";
 
 export const isUserCredentialsCorrect = async (username, password) => {
   const user = await User.findOne({ username, password });
@@ -6,7 +12,15 @@ export const isUserCredentialsCorrect = async (username, password) => {
 };
 
 export const createUser = async (username, email, password, passwordAgain) => {
-  //Check if username exists
-  //Check if the passwords is the same
-  //Check if that's valid email.
+  if (await isUsernameExists(username)) return false;
+  if (!isPasswordsSimilar(password, passwordAgain)) return false;
+  if (!isValidEmail(email)) return false;
+
+  const userSchema = new User({
+    id: generateID(),
+    username,
+    email,
+    password,
+  });
+  await userSchema.save();
 };

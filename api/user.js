@@ -15,27 +15,17 @@ router.get("/", async (req, res) => {
       res.status(404).send({ message: "שם המשתמש או הסיסמה אינם נכונים!" });
     }
   } catch (err) {
-    console.log(err);
+    res.status(500).send({ message: "בעיה בהבאת הנתונים" });
   }
 });
 
 router.post("/", async (req, res) => {
   try {
     const { username, email, password, passwordAgain } = req.body;
-
-    const isUserCreated = await createUser(
-      username,
-      email,
-      password,
-      passwordAgain
-    );
-    if (isUserCreated) {
-      res.sendStatus(200);
-    } else {
-      res.status(500).send({ message: "המשתמש לא נוצר" });
-    }
+    await createUser(username, email, password, passwordAgain);
+    res.sendStatus(200);
   } catch (err) {
-    console.log(err);
+    res.status(500).send({ message: "המשתמש לא נוצר" });
   }
 });
 
