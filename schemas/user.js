@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { ResourcesSchema } from "./resources.js";
 
 const UserSchema = new Schema({
   id: {
@@ -15,7 +16,11 @@ const UserSchema = new Schema({
   },
   email: {
     type: String,
-    required: false,
+    required: true,
+  },
+  resources: {
+    type: ResourcesSchema,
+    required: true,
   },
 });
 

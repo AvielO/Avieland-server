@@ -6,6 +6,11 @@ import {
 } from "../utils/user.js";
 import { v4 as generateID } from "uuid";
 
+export const getUser = async (username) => {
+  const user = await User.findOne({ username });
+  return user;
+};
+
 export const isUserCredentialsCorrect = async (username, password) => {
   const user = await User.findOne({ username, password });
   return user ? true : false;
@@ -21,6 +26,12 @@ export const createUser = async (username, email, password, passwordAgain) => {
     username,
     email,
     password,
+    resources: {
+      copper: 0,
+      silver: 0,
+      gold: 0,
+      diamond: 0,
+    },
   });
   await userSchema.save();
 };

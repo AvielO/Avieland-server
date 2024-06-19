@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { isUserCredentialsCorrect, createUser } from "../app/usersActions.js";
+import {
+  isUserCredentialsCorrect,
+  createUser,
+  getUser,
+} from "../app/usersActions.js";
 
 const router = Router();
 
@@ -13,6 +17,21 @@ router.get("/", async (req, res) => {
       res.sendStatus(200);
     } else {
       res.status(404).send({ message: "שם המשתמש או הסיסמה אינם נכונים!" });
+    }
+  } catch (err) {
+    res.status(500).send({ message: "בעיה בהבאת הנתונים" });
+  }
+});
+
+router.get("/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await getUser(username);
+
+    if (user) {
+      res.status(200).send({ resources: user.resources });
+    } else {
+      res.status(404).send({ message: "המשתמש אינו קיים" });
     }
   } catch (err) {
     res.status(500).send({ message: "בעיה בהבאת הנתונים" });
