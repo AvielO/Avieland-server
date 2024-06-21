@@ -1,22 +1,15 @@
 import { Router } from "express";
-import {
-  isUserCredentialsCorrect,
-  createUser,
-  getUser,
-} from "../app/usersActions.js";
+import { createUser, getUser, getUsers } from "../app/usersActions.js";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const username = req.query.username;
-    const password = req.query.password;
-
-    const isUserExist = await isUserCredentialsCorrect(username, password);
-    if (isUserExist) {
-      res.sendStatus(200);
+    const users = await getUsers();
+    if (users) {
+      res.status(200).send(users);
     } else {
-      res.status(404).send({ message: "שם המשתמש או הסיסמה אינם נכונים!" });
+      res.status(404).send({ message: "שגיאה בהבאת המשתמשים" });
     }
   } catch (err) {
     res.status(500).send({ message: "בעיה בהבאת הנתונים" });
@@ -40,8 +33,8 @@ router.get("/:username", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { username, email, password, passwordAgain } = req.body;
-    await createUser(username, email, password, passwordAgain);
+    const { username, email, password, passwordAgain, type } = req.body;
+    await createUser(username, email, password, passwordAgain, type);
     res.sendStatus(200);
   } catch (err) {
     res.status(500).send({ message: "המשתמש לא נוצר" });

@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import "dotenv/config";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
+import authAPI from "./api/auth.js";
 import usersAPI from "./api/user.js";
 
 const mongoURL =
@@ -17,8 +18,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/user", usersAPI);
+app.use("/auth", authAPI);
+app.use("/users", usersAPI);
 
-app.listen(port, () => {
+app.listen(port || 3000, () => {
   console.log(`Listening on port ${port}`);
 });
