@@ -4,12 +4,18 @@ import {
   isValidEmail,
 } from "../utils/user.js";
 import { formatUserData } from "../utils/general.js";
-import { getAllUsers, createUserDB } from "../db/users.js";
+import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
 
 export const getLeaderboardUsers = async () => {
   const users = await getAllUsers();
   const formatedUsers = formatUserData(users);
   return formatedUsers;
+};
+
+export const getUserInfo = async (username) => {
+  const user = await getUserByUsername(username);
+  const formatedUsers = formatUserData([user]);
+  return formatedUsers[0];
 };
 
 export const createUser = async (

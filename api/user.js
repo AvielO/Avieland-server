@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createUser, getLeaderboardUsers } from "../app/usersActions.js";
+import {
+  createUser,
+  getLeaderboardUsers,
+  getUserInfo,
+} from "../app/usersActions.js";
 import { getUserByUsername } from "../db/users.js";
 
 const router = Router();
@@ -17,13 +21,27 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:username", async (req, res) => {
+router.get("/:username/resources", async (req, res) => {
   try {
     const { username } = req.params;
     const user = await getUserByUsername(username);
 
     if (user) {
       res.status(200).send({ resources: user.resources });
+    } else {
+      res.status(404).send({ message: "המשתמש אינו קיים" });
+    }
+  } catch (err) {
+    res.status(500).send({ message: "בעיה בהבאת הנתונים" });
+  }
+});
+
+router.get("/:username/info", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await getUserInfo(username);
+    if (user) {
+      res.status(200).send(user);
     } else {
       res.status(404).send({ message: "המשתמש אינו קיים" });
     }
