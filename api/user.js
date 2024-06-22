@@ -1,13 +1,14 @@
 import { Router } from "express";
-import { createUser, getUser, getUsers } from "../app/usersActions.js";
+import { createUser, getLeaderboardUsers } from "../app/usersActions.js";
+import { getUserByUsername } from "../db/users.js";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const users = await getUsers();
-    if (users) {
-      res.status(200).send(users);
+    const leaderboardUsers = await getLeaderboardUsers();
+    if (leaderboardUsers) {
+      res.status(200).send(leaderboardUsers);
     } else {
       res.status(404).send({ message: "שגיאה בהבאת המשתמשים" });
     }
@@ -19,7 +20,7 @@ router.get("/", async (req, res) => {
 router.get("/:username", async (req, res) => {
   try {
     const { username } = req.params;
-    const user = await getUser(username);
+    const user = await getUserByUsername(username);
 
     if (user) {
       res.status(200).send({ resources: user.resources });
