@@ -34,6 +34,7 @@ export const buyWeapons = async (weaponID, username, quantity) => {
   };
   await user.updateOne({ $set: { resources: updatedResources } });
 
+  let newQuantity;
   let newUserWeapon;
   let userWeapons = user.weapons;
   const userWeaponsIDs = Array.from(userWeapons.keys());
@@ -41,6 +42,7 @@ export const buyWeapons = async (weaponID, username, quantity) => {
   if (userWeaponsIDs.includes(weaponID)) {
     const newQuantityObj = userWeapons.get(weaponID);
     newQuantityObj.quantity += +quantity;
+    newQuantity = newQuantityObj.quantity;
     newUserWeapon = {
       [weaponID]: {
         ...newQuantityObj,
@@ -52,7 +54,7 @@ export const buyWeapons = async (weaponID, username, quantity) => {
         name: weapon.name,
         attack: weapon.attack,
         defense: weapon.defense,
-        quantity,
+        quantity: newQuantity,
       },
     };
   }
@@ -63,4 +65,5 @@ export const buyWeapons = async (weaponID, username, quantity) => {
   };
 
   await user.updateOne({ $set: { weapons: updatedWeapons } });
+  return { ...updatedResources, quantity: newQuantity };
 };
