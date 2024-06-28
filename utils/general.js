@@ -24,3 +24,10 @@ export const formatUserData = (users) => {
   });
   return formatedUserData;
 };
+
+export const convertDbMapToDict = (DBMap) => {
+  const convertedMap = Object.fromEntries(
+    Array.from(DBMap.entries(), ([key, value]) => [key, value.toObject()])
+  );
+  return convertedMap;
+};

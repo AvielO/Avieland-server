@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { ResourcesSchema } from "./resources.js";
 import { WorkersSchema } from "./workers.js";
+import { UserWeaponsSchema } from "./weapon.js";
 
 const UserSchema = new Schema({
   id: {
@@ -30,6 +31,10 @@ const UserSchema = new Schema({
   workers: {
     type: WorkersSchema,
     required: true,
+  },
+  weapons: {
+    type: Map,
+    of: UserWeaponsSchema,
   },
   soliders: {
     type: Number,

@@ -30,6 +30,7 @@ export const createUserDB = async (username, email, password, type) => {
       gold: 10,
       diamond: 0,
     },
+    weapons: {},
     soliders: 35,
     group: "",
   });

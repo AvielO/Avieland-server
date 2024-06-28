@@ -1,5 +1,24 @@
 import mongoose, { Schema } from "mongoose";
 
+export const UserWeaponsSchema = new Schema({
+  name: {
+    type: String,
+    require: true,
+  },
+  attack: {
+    type: Number,
+    require: true,
+  },
+  defense: {
+    type: Number,
+    require: true,
+  },
+  quantity: {
+    type: Number,
+    require: true,
+  },
+});
+
 const WeaponSchema = new Schema({
   id: {
     type: String,
