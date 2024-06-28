@@ -13,6 +13,7 @@ export const buyWeapons = async (weaponID, username, quantity) => {
 
   if (!weapon) return;
   if (!user) return;
+  if (quantity <= 0) return;
   const {
     copper: userCopper,
     silver: userSilver,
