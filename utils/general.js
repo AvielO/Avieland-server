@@ -31,3 +31,19 @@ export const convertDbMapToDict = (DBMap) => {
   );
   return convertedMap;
 };
+
+export const calculateAttackPowerLevel = (weapons) => {
+  const attackPowerLevel = Object.values(weapons).reduce(
+    (sum, item) => sum + item["quantity"] * item["attack"],
+    0
+  );
+  return attackPowerLevel;
+};
+
+export const calculateDefensePowerLevel = (weapons) => {
+  const defensePowerLevel = Object.values(weapons).reduce(
+    (sum, item) => sum + item["quantity"] * item["defense"],
+    0
+  );
+  return defensePowerLevel;
+};

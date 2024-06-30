@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  attackUser,
   createUser,
   getLeaderboardUsers,
   getUserInfo,
@@ -57,6 +58,16 @@ router.post("/", async (req, res) => {
     res.sendStatus(200);
   } catch (err) {
     res.status(500).send({ message: "המשתמש לא נוצר" });
+  }
+});
+
+router.post("/:attackerUserame/attack/:targetUserame", async (req, res) => {
+  try {
+    const { attackerUserame, targetUserame } = req.params;
+    const reportID = await attackUser(attackerUserame, targetUserame);
+    res.status(200).send(reportID);
+  } catch (err) {
+    res.status(500).send({ message: "ההתקפה לא קרתה" });
   }
 });
 

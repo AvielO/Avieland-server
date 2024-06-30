@@ -3,7 +3,12 @@ import {
   isPasswordsSimilar,
   isValidEmail,
 } from "../utils/user.js";
-import { formatUserData } from "../utils/general.js";
+import {
+  formatUserData,
+  convertDbMapToDict,
+  calculateAttackPowerLevel,
+  calculateDefensePowerLevel,
+} from "../utils/general.js";
 import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
 
 export const getLeaderboardUsers = async () => {
@@ -31,4 +36,21 @@ export const createUser = async (
   if (!type) return false;
 
   await createUserDB(username, email, password, type);
+};
+
+export const attackUser = async (attackerUsername, targetUsername) => {
+  const attacker = await getUserByUsername(attackerUsername);
+  const target = await getUserByUsername(targetUsername);
+
+  const attackerWeaponDict = convertDbMapToDict(attacker.weapons);
+  const targetWeaponDict = convertDbMapToDict(target.weapons);
+
+  const attackerPowerLevel = calculateAttackPowerLevel(attackerWeaponDict);
+  const targetPowerLevel = calculateDefensePowerLevel(targetWeaponDict);
+
+  //Step of bonus Calculate
+
+  
+
+  return "123";
 };
