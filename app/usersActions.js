@@ -50,7 +50,7 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   const attackerPowerLevel = calculateAttackPowerLevel(attackerWeaponDict);
   const defenderPowerLevel = calculateDefensePowerLevel(defenderWeaponDict);
 
-  //Step of bonus Calculate
+  //TODO: Step of bonus Calculate
 
   const attackerUserReport = {
     id: attacker.id,
@@ -69,6 +69,7 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   let report;
   const reportID = generateID();
   if (attackerPowerLevel > defenderPowerLevel) {
+    //TODO: Calculate stolen resources
     report = new Report({
       id: reportID,
       attacker: attackerUserReport,
@@ -78,6 +79,8 @@ export const attackUser = async (attackerUsername, targetUsername) => {
       stolenSilver: 250,
       stolenGold: 250,
     });
+    //TODO: Decrease Defender resources
+    //TODO: Increase Attacker Resources
   } else {
     report = new Report({
       id: reportID,
