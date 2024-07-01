@@ -13,6 +13,8 @@ import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
 import Report from "../schemas/report.js";
 import { v4 as generateID } from "uuid";
 
+const STEAL_PERCENTAGE = 0.15;
+
 export const getLeaderboardUsers = async () => {
   const users = await getAllUsers();
   const formatedUsers = formatUserData(users);
@@ -50,8 +52,6 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   const attackerPowerLevel = calculateAttackPowerLevel(attackerWeaponDict);
   const defenderPowerLevel = calculateDefensePowerLevel(defenderWeaponDict);
 
-  //TODO: Step of bonus Calculate
-
   const attackerBonus =
     attacker.type === "attacker"
       ? attackerPowerLevel * 0.15
@@ -82,18 +82,39 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   let report;
   const reportID = generateID();
   if (attackerPowerLevel > defenderPowerLevel) {
-    //TODO: Calculate stolen resources
+    const stolenCopper = Math.round(
+      defender.resources.copper * STEAL_PERCENTAGE
+    );
+    const stolenSilver = Math.round(
+      defender.resources.silver * STEAL_PERCENTAGE
+    );
+    const stolenGold = Math.round(defender.resources.gold * STEAL_PERCENTAGE);
     report = new Report({
       id: reportID,
       attacker: attackerUserReport,
       defender: defenderUserReport,
       winner: "attacker",
-      stolenCopper: 250,
-      stolenSilver: 250,
-      stolenGold: 250,
+      stolenCopper,
+      stolenSilver,
+      stolenGold,
     });
-    //TODO: Decrease Defender resources
-    //TODO: Increase Attacker Resources
+
+    attacker.resources = {
+      ...attacker.resources,
+      copper: attacker.resources.copper + stolenCopper,
+      silver: attacker.resources.silver + stolenSilver,
+      gold: attacker.resources.gold + stolenGold,
+    };
+
+    defender.resources = {
+      ...defender.resources,
+      copper: defender.resources.copper - stolenCopper,
+      silver: defender.resources.silver - stolenSilver,
+      gold: defender.resources.gold - stolenGold,
+    };
+
+    await attacker.save();
+    await defender.save();
   } else {
     report = new Report({
       id: reportID,
@@ -102,6 +123,7 @@ export const attackUser = async (attackerUsername, targetUsername) => {
       winner: "defender",
     });
   }
+
   await report.save();
 
   return reportID;
