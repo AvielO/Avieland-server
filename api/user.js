@@ -65,7 +65,7 @@ router.post("/:attackerUserame/attack/:targetUserame", async (req, res) => {
   try {
     const { attackerUserame, targetUserame } = req.params;
     const reportID = await attackUser(attackerUserame, targetUserame);
-    res.status(200).send(reportID);
+    res.status(200).send(JSON.stringify(reportID));
   } catch (err) {
     res.status(500).send({ message: "ההתקפה לא קרתה" });
   }

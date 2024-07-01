@@ -10,6 +10,8 @@ import {
   calculateDefensePowerLevel,
 } from "../utils/general.js";
 import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
+import Report from "../schemas/report.js";
+import { v4 as generateID } from "uuid";
 
 export const getLeaderboardUsers = async () => {
   const users = await getAllUsers();
@@ -40,17 +42,53 @@ export const createUser = async (
 
 export const attackUser = async (attackerUsername, targetUsername) => {
   const attacker = await getUserByUsername(attackerUsername);
-  const target = await getUserByUsername(targetUsername);
+  const defender = await getUserByUsername(targetUsername);
 
   const attackerWeaponDict = convertDbMapToDict(attacker.weapons);
-  const targetWeaponDict = convertDbMapToDict(target.weapons);
+  const defenderWeaponDict = convertDbMapToDict(defender.weapons);
 
   const attackerPowerLevel = calculateAttackPowerLevel(attackerWeaponDict);
-  const targetPowerLevel = calculateDefensePowerLevel(targetWeaponDict);
+  const defenderPowerLevel = calculateDefensePowerLevel(defenderWeaponDict);
 
   //Step of bonus Calculate
 
-  
+  const attackerUserReport = {
+    id: attacker.id,
+    name: attacker.username,
+    powerLevel: attackerPowerLevel,
+    bonusPowerLevel: 0,
+  };
 
-  return "123";
+  const defenderUserReport = {
+    id: defender.id,
+    name: defender.username,
+    powerLevel: defenderPowerLevel,
+    bonusPowerLevel: 0,
+  };
+
+  let report;
+  const reportID = generateID();
+  if (attackerPowerLevel > defenderPowerLevel) {
+    //Attacker Won
+    report = new Report({
+      id: reportID,
+      attacker: attackerUserReport,
+      defender: defenderUserReport,
+      winner: "attacker",
+      stolenCopper: 250,
+      stolenSilver: 250,
+      stolenGold: 250,
+    });
+  } else {
+    //Target Won
+    report = new Report({
+      id: reportID,
+      attacker: attackerUserReport,
+      defender: defenderUserReport,
+      winner: "defender",
+    });
+  }
+  await report.save();
+
+  return reportID;
 };
