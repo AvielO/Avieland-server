@@ -126,5 +126,5 @@ export const attackUser = async (attackerUsername, targetUsername) => {
 
   await report.save();
 
-  return reportID;
+  return [reportID, attacker.resources];
 };
