@@ -69,7 +69,6 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   let report;
   const reportID = generateID();
   if (attackerPowerLevel > defenderPowerLevel) {
-    //Attacker Won
     report = new Report({
       id: reportID,
       attacker: attackerUserReport,
@@ -80,7 +79,6 @@ export const attackUser = async (attackerUsername, targetUsername) => {
       stolenGold: 250,
     });
   } else {
-    //Target Won
     report = new Report({
       id: reportID,
       attacker: attackerUserReport,

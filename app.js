@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import authAPI from "./api/auth.js";
 import usersAPI from "./api/user.js";
 import storeAPI from "./api/store.js";
+import reportAPI from "./api/report.js";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -22,6 +23,7 @@ app.use(cors());
 app.use("/auth", authAPI);
 app.use("/users", usersAPI);
 app.use("/store", storeAPI);
+app.use("/reports", reportAPI);
 
 app.listen(port || 3000, () => {
   console.log(`Listening on port ${port}`);
