@@ -52,18 +52,31 @@ export const attackUser = async (attackerUsername, targetUsername) => {
 
   //TODO: Step of bonus Calculate
 
+  const attackerBonus =
+    attacker.type === "attacker"
+      ? attackerPowerLevel * 0.15
+      : attacker.type === "attdefer"
+      ? attackerPowerLevel * 0.075
+      : 0;
+  const defenderBonus =
+    defender.type === "defender"
+      ? defenderPowerLevel * 0.15
+      : defender.type === "attdefer"
+      ? defenderPowerLevel * 0.075
+      : 0;
+
   const attackerUserReport = {
     id: attacker.id,
     name: attacker.username,
     powerLevel: attackerPowerLevel,
-    bonusPowerLevel: 0,
+    bonusPowerLevel: attackerBonus,
   };
 
   const defenderUserReport = {
     id: defender.id,
     name: defender.username,
     powerLevel: defenderPowerLevel,
-    bonusPowerLevel: 0,
+    bonusPowerLevel: defenderBonus,
   };
 
   let report;
