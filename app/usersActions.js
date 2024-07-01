@@ -118,6 +118,7 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   } else {
     report = new Report({
       id: reportID,
+      
       attacker: attackerUserReport,
       defender: defenderUserReport,
       winner: "defender",

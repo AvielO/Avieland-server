@@ -1,40 +1,51 @@
 import mongoose, { Schema } from "mongoose";
 
+const countryTime = () => {
+  const now = new Date();
+  const timeOffset = now.getTimezoneOffset() * 60000;
+  const localTime = new Date(now.getTime() - timeOffset);
+  return localTime;
+};
+
 const UserReportSchema = new Schema({
   id: {
     type: String,
-    require: true,
+    required: true,
   },
   name: {
     type: String,
-    require: true,
+    required: true,
   },
   powerLevel: {
     type: Number,
-    require: true,
+    required: true,
   },
   bonusPowerLevel: {
     type: Number,
-    require: true,
+    required: true,
   },
 });
 
 export const ReportSchema = new Schema({
   id: {
     type: String,
-    require: true,
+    required: true,
+  },
+  time: {
+    type: Date,
+    default: countryTime,
   },
   attacker: {
     type: UserReportSchema,
-    require: true,
+    required: true,
   },
   defender: {
     type: UserReportSchema,
-    require: true,
+    required: true,
   },
   winner: {
     type: String,
-    require: true,
+    required: true,
   },
   stolenCopper: {
     type: Number,
