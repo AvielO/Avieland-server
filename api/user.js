@@ -4,6 +4,7 @@ import {
   createUser,
   getLeaderboardUsers,
   getUserInfo,
+  getUserReports,
 } from "../app/usersActions.js";
 import { getUserByUsername } from "../db/users.js";
 
@@ -71,6 +72,16 @@ router.post("/:attackerUserame/attack/:targetUserame", async (req, res) => {
     res.status(200).send({ reportID, updatedResources });
   } catch (err) {
     res.status(500).send({ message: "ההתקפה לא קרתה" });
+  }
+});
+
+router.get("/:username/reports", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const reports = await getUserReports(username);
+    res.status(200).send({ reports });
+  } catch (err) {
+    res.status(500).send({ message: "לא ניתן לקבל את הדוחות" });
   }
 });
 

@@ -12,6 +12,7 @@ import {
 import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
 import Report from "../schemas/report.js";
 import { v4 as generateID } from "uuid";
+import { getReportsByUsername } from "../db/reports.js";
 
 const STEAL_PERCENTAGE = 0.15;
 
@@ -127,4 +128,12 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   await report.save();
 
   return [reportID, attacker.resources];
+};
+
+export const getUserReports = async (username) => {
+  const user = await getUserByUsername(username);
+  if (!user) return;
+
+  const reports = await getReportsByUsername(username);
+  return reports;
 };
