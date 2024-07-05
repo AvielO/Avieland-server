@@ -9,6 +9,7 @@ import usersAPI from "./api/user.js";
 import storeAPI from "./api/store.js";
 import reportAPI from "./api/report.js";
 import workersAPI from "./api/workers.js";
+import solidersAPI from "./api/soliders.js";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -26,6 +27,7 @@ app.use("/users", usersAPI);
 app.use("/store", storeAPI);
 app.use("/reports", reportAPI);
 app.use("/workers", workersAPI);
+app.use("/soliders", solidersAPI);
 
 app.listen(port || 3000, () => {
   console.log(`Listening on port ${port}`);

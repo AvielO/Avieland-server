@@ -15,7 +15,6 @@ export const hireWorkers = async (
     isNaN(silverWorkersQuantity) ||
     isNaN(goldWorkersQuantity)
   ) {
-    console.log("H");
     throw new Error("Not a number");
   }
   const user = await getUserByUsername(username);
