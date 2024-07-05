@@ -41,6 +41,22 @@ export const hireWorkers = async (
     user.workers.gold += +goldWorkersQuantity;
 
     await user.save();
+
+    const updatedWorkersQuantity = {
+      ...user.workers,
+      copper: user.workers.copper,
+      silver: user.workers.silver,
+      gold: user.workers.gold,
+    };
+
+    const updatedResources = {
+      copper: user.resources.copper,
+      silver: user.resources.silver,
+      gold: user.resources.gold,
+      diamond: user.resources.diamond,
+    };
+
+    return { updatedWorkersQuantity, updatedResources };
   } else {
     throw new Error("Have no enough resources");
   }

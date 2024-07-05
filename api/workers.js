@@ -12,12 +12,13 @@ router.post("/", async (req, res) => {
       goldWorkersQuantity,
     } = req.body;
 
-    await hireWorkers(
+    const { updatedWorkersQuantity, updatedResources } = await hireWorkers(
       username,
       copperWorkersQuantity,
       silverWorkersQuantity,
       goldWorkersQuantity
     );
+    res.status(200).send({ updatedWorkersQuantity, updatedResources });
   } catch (err) {
     res.status(500).send({ message: "לא היה ניתן להעסיק עובדים" });
   }
