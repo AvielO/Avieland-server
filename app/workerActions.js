@@ -16,6 +16,12 @@ export const hireWorkers = async (
     isNaN(goldWorkersQuantity)
   ) {
     throw new Error("Not a number");
+  } else if (
+    copperWorkersQuantity < 0 ||
+    silverWorkersQuantity < 0 ||
+    goldWorkersQuantity < 0
+  ) {
+    throw new Error("Please provide number above 0");
   }
   const user = await getUserByUsername(username);
   if (!user) return;

@@ -5,6 +5,8 @@ const SOLIDER_COST = 100;
 export const hireSoliders = async (username, solidersQuantity) => {
   if (isNaN(solidersQuantity)) {
     throw new Error("Not a number");
+  } else if (solidersQuantity <= 0) {
+    throw new Error("Please provide number above 0");
   }
   const user = await getUserByUsername(username);
   if (!user) return;
