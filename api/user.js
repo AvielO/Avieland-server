@@ -85,4 +85,14 @@ router.get("/:username/reports", async (req, res) => {
   }
 });
 
+router.get("/:username/bank", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { bank } = await getUserByUsername(username);
+    res.status(200).send({ bank });
+  } catch (err) {
+    res.status(500).send({ message: "לא ניתן לקבל את הדוחות" });
+  }
+});
+
 export default router;

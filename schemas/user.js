@@ -40,6 +40,10 @@ const UserSchema = new Schema({
     type: Number,
     required: true,
   },
+  bank: {
+    type: ResourcesSchema,
+    required: true,
+  },
   group: {
     type: String,
     required: false,

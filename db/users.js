@@ -31,6 +31,12 @@ export const createUserDB = async (username, email, password, type) => {
       diamond: 0,
     },
     weapons: {},
+    bank: {
+      copper: 0,
+      silver: 0,
+      gold: 0,
+      diamond: 0,
+    },
     soliders: 35,
     group: "",
   });
