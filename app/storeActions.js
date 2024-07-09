@@ -35,8 +35,8 @@ export const buyWeapons = async (weaponID, username, quantity) => {
   };
   await user.updateOne({ $set: { resources: updatedResources } });
 
-  let newQuantity;
   let newUserWeapon;
+  let newQuantity = quantity;
   let userWeapons = user.weapons;
   const userWeaponsIDs = Array.from(userWeapons.keys());
 
