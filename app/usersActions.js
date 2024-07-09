@@ -48,10 +48,10 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   const defender = await getUserByUsername(targetUsername);
 
   const attackerWeaponDict = convertDbMapToDict(attacker.weapons);
-  const defenderWeaponDict = convertDbMapToDict(defender.weapons);
+  const defenderWeaponDict = convertDbMapToDict(defender.weapons);  
 
-  const attackerPowerLevel = calculateAttackPowerLevel(attackerWeaponDict);
-  const defenderPowerLevel = calculateDefensePowerLevel(defenderWeaponDict);
+  const attackerPowerLevel = calculateAttackPowerLevel(attackerWeaponDict, attacker.soliders);
+  const defenderPowerLevel = calculateDefensePowerLevel(defenderWeaponDict, defender.soliders);
 
   const attackerBonus =
     attacker.type === "attacker"
