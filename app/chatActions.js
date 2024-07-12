@@ -35,10 +35,16 @@ export const getUniqueSenders = async (sender) => {
     { $sort: { createdAt: -1 } },
   ]);
 
-  const uniqueNamesReceivers = uniqueReceivers
-    .map((uniqueSender) => uniqueSender.receiver)
-    .filter((uniqueName) => uniqueName !== sender);
+  const uniqueNamesSenders = uniqueReceivers.map(
+    (uniqueSender) => uniqueSender.sender
+  );
+  const uniqueNamesReceivers = uniqueReceivers.map(
+    (uniqueSender) => uniqueSender.receiver
+  );
+  const allUniqueNames = [
+    ...uniqueNamesSenders,
+    ...uniqueNamesReceivers,
+  ].filter((uniqueName) => uniqueName !== sender);
 
-  console.log(uniqueReceivers);
-  return uniqueNamesReceivers;
+  return allUniqueNames;
 };
