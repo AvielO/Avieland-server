@@ -88,7 +88,11 @@ io.on("connection", (socket) => {
     //   });
     // }
     // await chat.save();
-    io.to(room).emit("message accepted", { user, message, date: localTime });
+    io.to(room).emit("message accepted", {
+      sender: user,
+      content: message,
+      createdAt: localTime,
+    });
   });
 
   socket.on("disconnect", () => {
