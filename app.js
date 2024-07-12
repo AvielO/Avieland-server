@@ -17,8 +17,8 @@ import solidersAPI from "./api/soliders.js";
 import bankAPI from "./api/bank.js";
 import chatAPI from "./api/chat.js";
 
-import { createMessage, getChatByParticipants } from "./app/chatActions.js";
-import Chat, { Message } from "./schemas/message.js";
+import { createMessage } from "./app/chatActions.js";
+import { Message } from "./schemas/message.js";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -77,17 +77,6 @@ io.on("connection", (socket) => {
     const messageID = generateID();
     await createMessage(messageID, user, room, message);
 
-    // let chat = await getChatByParticipants([user, room]);
-
-    // if (chat) {
-    //   chat.messages.push(messageID);
-    // } else {
-    //   chat = new Chat({
-    //     participants: [user, room],
-    //     messages: [messageID],
-    //   });
-    // }
-    // await chat.save();
     io.to(room).emit("message accepted", {
       sender: user,
       content: message,

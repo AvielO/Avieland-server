@@ -11,16 +11,6 @@ export const messageSchema = new Schema(
   { timestamps: true }
 );
 
-const chatSchema = new Schema(
-  {
-    participants: [{ type: String, required: true }],
-    messages: [{ type: String, required: true }],
-  },
-  { timestamps: true }
-);
-
 const Message = mongoose.model("Message", messageSchema);
-const Chat = mongoose.model("Chat", chatSchema);
 
 export { Message };
-export default Chat;
