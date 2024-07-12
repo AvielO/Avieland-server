@@ -18,7 +18,7 @@ import bankAPI from "./api/bank.js";
 import chatAPI from "./api/chat.js";
 
 import { createMessage } from "./app/chatActions.js";
-import { Message } from "./schemas/message.js";
+import Message from "./schemas/message.js";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";

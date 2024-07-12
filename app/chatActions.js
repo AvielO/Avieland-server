@@ -1,4 +1,4 @@
-import Chat, { Message } from "../schemas/message.js";
+import Message from "../schemas/message.js";
 
 export const createMessage = async (messageID, sender, receiver, content) => {
   const message = new Message({
