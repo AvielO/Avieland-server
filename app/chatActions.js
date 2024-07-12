@@ -20,7 +20,6 @@ export const getChatByParticipants = async (participants) => {
 export const getUniqueSenders = async (sender) => {
   const uniqueReceivers = await Message.aggregate([
     { $match: { $or: [{ sender }, { receiver: sender }] } }, // Filter by sender
-    { $sort: { createdAt: -1 } }, // Sort by creation date descending
     {
       $group: {
         _id: "$receiver",
@@ -33,12 +32,13 @@ export const getUniqueSenders = async (sender) => {
         updatedAt: { $first: "$updatedAt" },
       },
     },
-    { $sort: { createdAt: -1 } }, // Optional: Sort again if you want the final results ordered
+    { $sort: { createdAt: -1 } },
   ]);
 
-  const uniqueNamesReceivers = uniqueReceivers.map(
-    (uniqueSender) => uniqueSender.receiver
-  );
+  const uniqueNamesReceivers = uniqueReceivers
+    .map((uniqueSender) => uniqueSender.receiver)
+    .filter((uniqueName) => uniqueName !== sender);
 
+  console.log(uniqueReceivers);
   return uniqueNamesReceivers;
 };
