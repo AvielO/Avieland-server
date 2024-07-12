@@ -7,7 +7,6 @@ router.get("/:username", async (req, res) => {
   try {
     const { username } = req.params;
     const uniqueSenders = await getUniqueSenders(username);
-    console.log(uniqueSenders)
     res.status(200).send({ uniqueSenders });
   } catch (err) {
     res.status(500).send({ message: "לא היה ניתן להפקיד את הכסף" });

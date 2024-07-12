@@ -45,6 +45,7 @@ export const getUniqueSenders = async (sender) => {
     ...uniqueNamesSenders,
     ...uniqueNamesReceivers,
   ].filter((uniqueName) => uniqueName !== sender);
+  let uniqueArray = [...new Set(allUniqueNames)];
 
-  return allUniqueNames;
+  return uniqueArray;
 };
