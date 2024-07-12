@@ -19,6 +19,7 @@ import chatAPI from "./api/chat.js";
 
 import { createMessage } from "./app/chatActions.js";
 import Message from "./schemas/message.js";
+import { UnorderedBulkOperation } from "mongodb";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -47,15 +48,26 @@ app.use("/soliders", solidersAPI);
 app.use("/bank", bankAPI);
 app.use("/chats", chatAPI);
 
+const usersInRoom = {};
+
 io.on("connection", (socket) => {
   console.log("a user connected");
 
   socket.on("listen myself", async ({ username }) => {
     socket.join(username);
+    if (!usersInRoom[username]) {
+      usersInRoom[username] = {};
+    }
+    if (username !== undefined) usersInRoom[username][socket.id] = username;
   });
 
   socket.on("join chat", async ({ room, username }) => {
     socket.join(room);
+    if (!usersInRoom[room] && room !== undefined) {
+      usersInRoom[room] = {};
+    }
+    if (room !== undefined) usersInRoom[room][socket.id] = username;
+
     const messages = await Message.find({
       $or: [
         { sender: username, receiver: room },
@@ -67,6 +79,9 @@ io.on("connection", (socket) => {
 
   socket.on("leave chat", (room) => {
     socket.leave(room);
+    if (usersInRoom[room]) {
+      delete usersInRoom[room][socket.id]; // Remove user from tracking
+    }
   });
 
   socket.on("message sent", async ({ room, message, user }) => {
@@ -77,7 +92,18 @@ io.on("connection", (socket) => {
     const messageID = generateID();
     await createMessage(messageID, user, room, message);
 
-    io.to(room).emit("message accepted", {
+    const innerKey = Object.keys(usersInRoom[room]).find(
+      (innerKey) => usersInRoom[room][innerKey] === room
+    );
+    if (innerKey) {
+      io.to(innerKey).emit("message accepted", {
+        sender: user,
+        content: message,
+        createdAt: localTime,
+      });
+    }
+
+    io.to(socket.id).emit("message accepted", {
       sender: user,
       content: message,
       createdAt: localTime,
