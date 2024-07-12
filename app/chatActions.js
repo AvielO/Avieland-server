@@ -16,3 +16,29 @@ export const getChatByParticipants = async (participants) => {
   }).populate("messages");
   return chat;
 };
+
+export const getUniqueSenders = async (sender) => {
+  const uniqueReceivers = await Message.aggregate([
+    { $match: { sender: sender } }, // Filter by sender
+    { $sort: { createdAt: -1 } }, // Sort by creation date descending
+    {
+      $group: {
+        _id: "$receiver",
+        messageID: { $first: "$messageID" },
+        sender: { $first: "$sender" },
+        receiver: { $first: "$receiver" },
+        content: { $first: "$content" },
+        isRead: { $first: "$isRead" },
+        createdAt: { $first: "$createdAt" },
+        updatedAt: { $first: "$updatedAt" },
+      },
+    },
+    { $sort: { createdAt: -1 } }, // Optional: Sort again if you want the final results ordered
+  ]);
+
+  const uniqueNamesReceivers = uniqueReceivers.map(
+    (uniqueSender) => uniqueSender.receiver
+  );
+
+  return uniqueNamesReceivers;
+};

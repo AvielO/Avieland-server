@@ -18,7 +18,7 @@ import bankAPI from "./api/bank.js";
 import chatAPI from "./api/chat.js";
 
 import { createMessage, getChatByParticipants } from "./app/chatActions.js";
-import Chat from "./schemas/message.js";
+import Chat, { Message } from "./schemas/message.js";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -50,14 +50,23 @@ app.use("/chats", chatAPI);
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  socket.on("join chat", (room) => {
+  socket.on("listen myself", async ({ username }) => {
+    socket.join(username);
+  });
+
+  socket.on("join chat", async ({ room, username }) => {
     socket.join(room);
-    console.log(`User joined room: ${room}`);
+    const messages = await Message.find({
+      $or: [
+        { sender: username, receiver: room },
+        { sender: room, receiver: username },
+      ],
+    }).sort({ updatedAt: 1 });
+    io.to(socket.id).emit("previous messages", { messages });
   });
 
   socket.on("leave chat", (room) => {
     socket.leave(room);
-    console.log(`User left room: ${room}`);
   });
 
   socket.on("message sent", async ({ room, message, user }) => {
@@ -68,17 +77,17 @@ io.on("connection", (socket) => {
     const messageID = generateID();
     await createMessage(messageID, user, room, message);
 
-    let chat = await getChatByParticipants([user, room]);
+    // let chat = await getChatByParticipants([user, room]);
 
-    if (chat) {
-      chat.messages.push(messageID);
-    } else {
-      chat = new Chat({
-        participants: [user, room],
-        messages: [messageID],
-      });
-    }
-    await chat.save();
+    // if (chat) {
+    //   chat.messages.push(messageID);
+    // } else {
+    //   chat = new Chat({
+    //     participants: [user, room],
+    //     messages: [messageID],
+    //   });
+    // }
+    // await chat.save();
     io.to(room).emit("message accepted", { user, message, date: localTime });
   });
 
