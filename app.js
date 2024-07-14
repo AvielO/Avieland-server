@@ -19,7 +19,10 @@ import chatAPI from "./api/chat.js";
 
 import { createMessage } from "./app/chatActions.js";
 import Message from "./schemas/message.js";
-import { UnorderedBulkOperation } from "mongodb";
+
+import { calculateTimeUntilNextFiveMinute } from "./utils/general.js";
+import { getAllUsers, getUserByUsername } from "./db/users.js";
+import User from "./schemas/user.js";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -49,12 +52,15 @@ app.use("/bank", bankAPI);
 app.use("/chats", chatAPI);
 
 const usersInRoom = {};
+const userToSocketID = {};
 
 io.on("connection", (socket) => {
   console.log("a user connected");
 
   socket.on("listen myself", async ({ username }) => {
     socket.join(username);
+    
+    userToSocketID[username] = socket.id;
     if (!usersInRoom[username]) {
       usersInRoom[username] = {};
     }
@@ -114,6 +120,50 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 });
+
+let timeUntilNextFive = 5;
+setInterval(async () => {
+  if (timeUntilNextFive >= 1) {
+    timeUntilNextFive--;
+  } else {
+    const users = await getAllUsers();
+    const updatedUserState = users.map((user) => {
+      const {
+        copper: copperWorkers,
+        silver: silverWorkers,
+        gold: goldWorkers,
+      } = user.workers;
+
+      const cooperToAdd = +copperWorkers * 5;
+      const silverToAdd = +silverWorkers * 5;
+      const goldToAdd = +goldWorkers * 5;
+
+      user.resources.copper += cooperToAdd;
+      user.resources.silver += silverToAdd;
+      user.resources.gold += goldToAdd;
+
+      return {
+        updateOne: {
+          filter: { _id: user._id },
+          update: { $set: user },
+        },
+      };
+    });
+
+    await User.bulkWrite(updatedUserState);
+
+    Object.keys(userToSocketID).forEach(async (username) => {
+      const user = await getUserByUsername(username);
+      io.to(userToSocketID[username]).emit("update resources", {
+        copper: user.resources.copper,
+        silver: user.resources.silver,
+        gold: user.resources.gold,
+        diamond: user.resources.diamond,
+      });
+    });
+    timeUntilNextFive = 5;
+  }
+}, 1000);
 
 server.listen(port || 3000, () => {
   console.log(`Listening on port ${port}`);

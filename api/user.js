@@ -6,11 +6,24 @@ import {
   getUserInfo,
   getUserReports,
 } from "../app/usersActions.js";
-import { getUserByUsername } from "../db/users.js";
+import { getAllUsers, getUserByUsername } from "../db/users.js";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
+  try {
+    const allUsers = await getAllUsers();
+    if (allUsers) {
+      res.status(200).send(allUsers);
+    } else {
+      res.status(404).send({ message: "שגיאה בהבאת המשתמשים" });
+    }
+  } catch (err) {
+    res.status(500).send({ message: "בעיה בהבאת הנתונים" });
+  }
+});
+
+router.get("/leaderboard", async (req, res) => {
   try {
     const leaderboardUsers = await getLeaderboardUsers();
     if (leaderboardUsers) {

@@ -50,3 +50,21 @@ export const calculateDefensePowerLevel = (weapons, solidersAmount) => {
     ) * solidersAmount;
   return defensePowerLevel;
 };
+
+export const calculateTimeUntilNextFiveMinute = () => {
+  const now = new Date();
+  const minutes = now.getMinutes();
+  const nextFiveMinuteMark = Math.ceil((minutes + 1) / 5) * 5;
+  const nextFiveMinute = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    now.getHours(),
+    nextFiveMinuteMark
+  );
+  const timeUntilNextFiveMinute = Math.round(
+    Math.max(0, (nextFiveMinute - now) / 1000)
+  ); // time in seconds
+
+  return timeUntilNextFiveMinute;
+};
