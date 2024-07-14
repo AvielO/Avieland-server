@@ -52,6 +52,8 @@ app.use("/bank", bankAPI);
 app.use("/chats", chatAPI);
 
 const usersInRoom = {};
+
+const socketIDToUser = {};
 const userToSocketID = {};
 
 io.on("connection", (socket) => {
@@ -59,8 +61,9 @@ io.on("connection", (socket) => {
 
   socket.on("listen myself", async ({ username }) => {
     socket.join(username);
-    
+
     userToSocketID[username] = socket.id;
+    socketIDToUser[socket.id] = username;
     if (!usersInRoom[username]) {
       usersInRoom[username] = {};
     }
@@ -117,13 +120,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    const username = socketIDToUser[socket.id];
+
+    delete socketIDToUser[socket.id];
+    delete userToSocketID[username];
     console.log("user disconnected");
   });
 });
 
-let timeUntilNextFive = 5;
+let timeUntilNextFive = calculateTimeUntilNextFiveMinute();
 setInterval(async () => {
-  if (timeUntilNextFive >= 1) {
+  if (timeUntilNextFive > 0) {
     timeUntilNextFive--;
   } else {
     const users = await getAllUsers();
@@ -161,7 +168,8 @@ setInterval(async () => {
         diamond: user.resources.diamond,
       });
     });
-    timeUntilNextFive = 5;
+
+    timeUntilNextFive = calculateTimeUntilNextFiveMinute();
   }
 }, 1000);
 
