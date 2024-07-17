@@ -215,8 +215,8 @@ export const getUserWithExtraInfo = async (username) => {
     }
   });
 
-  const arrayFormattedReports = Object.values(formattedReports);
-  const arrayFormattedWinLose = Object.values(formattedWinLose);
+  const arrayFormattedReports = Object.values(formattedReports).reverse();
+  const arrayFormattedWinLose = Object.values(formattedWinLose).reverse();
 
   const weaponsDict = convertDbMapToDict(weapons);
   const arrayFormattedWeapons = Object.keys(weaponsDict).map((key) => ({
