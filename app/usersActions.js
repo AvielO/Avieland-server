@@ -180,6 +180,7 @@ export const getUserWithExtraInfo = async (username) => {
 
   //reports amount
   const formattedReports = {};
+  const formattedWinLose = {};
   const reports = await getUserReports(username);
 
   reports.forEach((report) => {
@@ -193,21 +194,30 @@ export const getUserWithExtraInfo = async (username) => {
 
     if (!formattedReports[dayMonth]) {
       formattedReports[dayMonth] = { name: dayMonth, attacker: 0, defender: 0 };
+      formattedWinLose[dayMonth] = { name: dayMonth, wins: 0, loses: 0 };
     }
 
     if (report.attacker.name === username) {
       formattedReports[dayMonth].attacker += 1;
+      if (report.winner === "attacker") {
+        formattedWinLose[dayMonth].wins += 1;
+      }
     }
 
     if (report.defender.name === username) {
       formattedReports[dayMonth].defender += 1;
+      if (report.winner === "defender") {
+        formattedWinLose[dayMonth].loses += 1;
+      }
     }
   });
 
   const arrayFormattedReports = Object.values(formattedReports);
-  
+  const arrayFormattedWinLose = Object.values(formattedWinLose);
 
-
-
-  
+  const weaponsDict = convertDbMapToDict(weapons);
+  const arrayFormattedWeapons = Object.keys(weaponsDict).map((key) => ({
+    name: weaponsDict[key].name,
+    value: weaponsDict[key].quantity,
+  }));
 };
