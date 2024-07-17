@@ -13,6 +13,7 @@ import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
 import Report from "../schemas/report.js";
 import { v4 as generateID } from "uuid";
 import { getReportsByUsername } from "../db/reports.js";
+import { workersResourcesMap } from "../utils/mapping.js";
 
 const STEAL_PERCENTAGE = 0.15;
 
@@ -48,10 +49,16 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   const defender = await getUserByUsername(targetUsername);
 
   const attackerWeaponDict = convertDbMapToDict(attacker.weapons);
-  const defenderWeaponDict = convertDbMapToDict(defender.weapons);  
+  const defenderWeaponDict = convertDbMapToDict(defender.weapons);
 
-  const attackerPowerLevel = calculateAttackPowerLevel(attackerWeaponDict, attacker.soliders);
-  const defenderPowerLevel = calculateDefensePowerLevel(defenderWeaponDict, defender.soliders);
+  const attackerPowerLevel = calculateAttackPowerLevel(
+    attackerWeaponDict,
+    attacker.soliders
+  );
+  const defenderPowerLevel = calculateDefensePowerLevel(
+    defenderWeaponDict,
+    defender.soliders
+  );
 
   const attackerBonus =
     attacker.type === "attacker"
@@ -136,4 +143,71 @@ export const getUserReports = async (username) => {
 
   const reports = await getReportsByUsername(username);
   return reports;
+};
+
+export const getUserWithExtraInfo = async (username) => {
+  const userWithExtraDetails = {};
+  const user = await getUserByUsername(username);
+  if (!user) return;
+  const { resources, weapons, soliders } = user.toObject();
+
+  //Workers
+  const formattedResources = Object.keys(resources)
+    .map((key) => {
+      if (workersResourcesMap[key]) {
+        return {
+          name: workersResourcesMap[key],
+          value: resources[key],
+        };
+      }
+    })
+    .filter((item) => item !== undefined);
+
+  //PlayerPowerDistribution
+  const weaponDict = convertDbMapToDict(weapons);
+  const attackPowerLevel = calculateAttackPowerLevel(weaponDict, soliders);
+  const defensePowerLevel = calculateDefensePowerLevel(weaponDict, soliders);
+  const userPowerLevel = [
+    {
+      name: "כוח התקפי",
+      value: attackPowerLevel,
+    },
+    {
+      name: "כוח הגנתי",
+      value: defensePowerLevel,
+    },
+  ];
+
+  //reports amount
+  const formattedReports = {};
+  const reports = await getUserReports(username);
+
+  reports.forEach((report) => {
+    const date = new Date(report.time);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+
+    const dayString = day < 10 ? `0${day}` : `${day}`;
+    const monthString = month < 10 ? `0${month}` : `${month}`;
+    const dayMonth = `${dayString}.${monthString}`;
+
+    if (!formattedReports[dayMonth]) {
+      formattedReports[dayMonth] = { name: dayMonth, attacker: 0, defender: 0 };
+    }
+
+    if (report.attacker.name === username) {
+      formattedReports[dayMonth].attacker += 1;
+    }
+
+    if (report.defender.name === username) {
+      formattedReports[dayMonth].defender += 1;
+    }
+  });
+
+  const arrayFormattedReports = Object.values(formattedReports);
+  
+
+
+
+  
 };
