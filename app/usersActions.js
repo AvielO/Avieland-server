@@ -152,15 +152,15 @@ export const getUserWithExtraInfo = async (username) => {
   const userWithExtraDetails = {};
   const user = await getUserByUsername(username);
   if (!user) return;
-  const { resources, weapons, soliders, bank } = user.toObject();
+  const { resources, weapons, soliders, bank, workers } = user.toObject();
 
   //Workers
-  const formattedResources = Object.keys(resources)
+  const formattedResources = Object.keys(workers)
     .map((key) => {
       if (workersResourcesMap[key]) {
         return {
           name: workersResourcesMap[key],
-          value: resources[key],
+          value: workers[key],
         };
       }
     })
