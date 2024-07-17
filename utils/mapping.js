@@ -3,3 +3,9 @@ export const workersResourcesMap = {
   silver: "עובדי כסף",
   gold: "עובדי זהב",
 };
+
+export const resourceTranslationMap = {
+  copper: "נחושת",
+  silver: "כסף",
+  gold: "זהב",
+};

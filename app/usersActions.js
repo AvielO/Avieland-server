@@ -13,7 +13,10 @@ import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
 import Report from "../schemas/report.js";
 import { v4 as generateID } from "uuid";
 import { getReportsByUsername } from "../db/reports.js";
-import { workersResourcesMap } from "../utils/mapping.js";
+import {
+  resourceTranslationMap,
+  workersResourcesMap,
+} from "../utils/mapping.js";
 
 const STEAL_PERCENTAGE = 0.15;
 
@@ -149,7 +152,7 @@ export const getUserWithExtraInfo = async (username) => {
   const userWithExtraDetails = {};
   const user = await getUserByUsername(username);
   if (!user) return;
-  const { resources, weapons, soliders } = user.toObject();
+  const { resources, weapons, soliders, bank } = user.toObject();
 
   //Workers
   const formattedResources = Object.keys(resources)
@@ -220,4 +223,24 @@ export const getUserWithExtraInfo = async (username) => {
     name: weaponsDict[key].name,
     value: weaponsDict[key].quantity,
   }));
+
+  const arrayFormattedBank = Object.keys(bank)
+    .map((key) => {
+      if (resourceTranslationMap[key]) {
+        return {
+          name: resourceTranslationMap[key],
+          value: bank[key],
+        };
+      }
+    })
+    .filter((item) => item !== undefined);
+
+  return {
+    workersDistribution: formattedResources,
+    playerPowerDistribution: userPowerLevel,
+    reportsTypeDistribution: arrayFormattedReports,
+    reportsWinLoseDistribution: arrayFormattedWinLose,
+    weaponsDistribution: arrayFormattedWeapons,
+    bankDistribution: arrayFormattedBank,
+  };
 };

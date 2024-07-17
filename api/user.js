@@ -5,7 +5,7 @@ import {
   getLeaderboardUsers,
   getUserInfo,
   getUserReports,
-  getUserWithExtraInfo
+  getUserWithExtraInfo,
 } from "../app/usersActions.js";
 import { getAllUsers, getUserByUsername } from "../db/users.js";
 
@@ -24,7 +24,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 router.get("/leaderboard", async (req, res) => {
   try {
     const leaderboardUsers = await getLeaderboardUsers();
@@ -42,6 +41,7 @@ router.get("/:username", async (req, res) => {
   try {
     const { username } = req.params;
     const userExpended = await getUserWithExtraInfo(username);
+    res.status(200).send(userExpended);
   } catch (err) {
     res.status(500).send({ message: "בעיה בהבאת הנתונים" });
   }
