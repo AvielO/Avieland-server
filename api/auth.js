@@ -18,4 +18,12 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    res.send(<h1>NoU</h1>)
+  } catch (err) {
+    res.status(500).send({ message: "בעיה בהבאת הנתונים" });
+  }
+});
+
 export default router;
