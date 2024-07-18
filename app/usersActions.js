@@ -204,12 +204,16 @@ export const getUserWithExtraInfo = async (username) => {
       formattedReports[dayMonth].attacker += 1;
       if (report.winner === "attacker") {
         formattedWinLose[dayMonth].wins += 1;
+      } else if (report.winner === "defender") {
+        formattedWinLose[dayMonth].loses += 1;
       }
     }
 
     if (report.defender.name === username) {
       formattedReports[dayMonth].defender += 1;
       if (report.winner === "defender") {
+        formattedWinLose[dayMonth].wins += 1;
+      } else if(report.winner === "attacker") {
         formattedWinLose[dayMonth].loses += 1;
       }
     }
