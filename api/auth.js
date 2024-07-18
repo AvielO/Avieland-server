@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/checking", async (req, res) => {
   try {
     res.send(<h1>NoU</h1>)
   } catch (err) {
