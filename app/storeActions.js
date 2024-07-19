@@ -1,5 +1,6 @@
 import { getAllWeapons, getWeaponByID } from "../db/store.js";
 import { getUserByUsername } from "../db/users.js";
+import ValidationError from "../utils/errorsTypes.js";
 import { convertDbMapToDict } from "../utils/general.js";
 
 export const getStore = async () => {
@@ -26,7 +27,7 @@ export const buyWeapons = async (weaponID, username, quantity) => {
     silverPrice * quantity > userSilver ||
     goldPrice * quantity > userGold
   )
-    return;
+    throw new ValidationError("אין לך מספיק משאבים", 403);
   const updatedResources = {
     ...user.resources.toObject(),
     copper: userCopper - copperPrice * quantity,

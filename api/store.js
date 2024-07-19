@@ -20,7 +20,7 @@ router.post("/:weaponID", async (req, res) => {
     const newUserData = await buyWeapons(weaponID, username, quantity);
     res.status(200).send(newUserData);
   } catch (err) {
-    res.status(500).send({ message: "בעיה בהבאת הנתונים" });
+    res.status(err.statusCode).send({ message: err.message });
   }
 });
 
