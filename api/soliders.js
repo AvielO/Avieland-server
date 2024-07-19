@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
     );
     res.status(200).send({ updatedSolidersQuantity, updatedResources });
   } catch (err) {
-    res.status(500).send({ message: "לא היה ניתן להעסיק חיילים" });
+    res.status(err.statusCode).send({ message: err.message });
   }
 });
 

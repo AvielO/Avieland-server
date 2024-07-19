@@ -1,12 +1,13 @@
 import { getUserByUsername } from "../db/users.js";
+import ValidationError from "../utils/errorsTypes.js";
 
 const SOLIDER_COST = 100;
 
 export const hireSoliders = async (username, solidersQuantity) => {
   if (isNaN(solidersQuantity)) {
-    throw new Error("Not a number");
+    throw new ValidationError("כמות החיילים חייבת להכיל מספר שלם", 400);
   } else if (solidersQuantity <= 0) {
-    throw new Error("Please provide number above 0");
+    throw new ValidationError("כמות החיילים חייבת להכיל מספר גדול מ0", 400);
   }
   const user = await getUserByUsername(username);
   if (!user) return;
@@ -32,6 +33,6 @@ export const hireSoliders = async (username, solidersQuantity) => {
 
     return { updatedSolidersQuantity, updatedResources };
   } else {
-    throw new Error("Have no enough resources");
+    throw new ValidationError("אין לך מספיק משאבים", 403);
   }
 };
