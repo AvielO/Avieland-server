@@ -1,4 +1,5 @@
 import { getUserByUsername } from "../db/users.js";
+import ValidationError from "../utils/errorsTypes.js";
 
 const COPPER_WORKER_COST = 100;
 const SILVER_WORKER_COST = 100;
@@ -15,13 +16,13 @@ export const hireWorkers = async (
     isNaN(silverWorkersQuantity) ||
     isNaN(goldWorkersQuantity)
   ) {
-    throw new Error("Not a number");
+    throw new ValidationError("כמות עובדים חייבת להכיל מספר שלם", 400);
   } else if (
     copperWorkersQuantity < 0 ||
     silverWorkersQuantity < 0 ||
     goldWorkersQuantity < 0
   ) {
-    throw new Error("Please provide number above 0");
+    throw new ValidationError("כמות העובדים חייבת להכיל מספר הגדול מ0", 400);
   }
   const user = await getUserByUsername(username);
   if (!user) return;
@@ -63,6 +64,6 @@ export const hireWorkers = async (
 
     return { updatedWorkersQuantity, updatedResources };
   } else {
-    throw new Error("Have no enough resources");
+    throw new ValidationError("אין לך מספיק משאבים", 403);
   }
 };

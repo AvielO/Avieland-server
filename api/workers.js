@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
     );
     res.status(200).send({ updatedWorkersQuantity, updatedResources });
   } catch (err) {
-    res.status(500).send({ message: "לא היה ניתן להעסיק עובדים" });
+    res.status(err.statusCode).send({ message: err.message });
   }
 });
 
