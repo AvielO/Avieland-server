@@ -17,6 +17,7 @@ import {
   resourceTranslationMap,
   workersResourcesMap,
 } from "../utils/mapping.js";
+import ValidationError from "../utils/errorsTypes.js";
 
 const STEAL_PERCENTAGE = 0.15;
 
@@ -39,9 +40,13 @@ export const createUser = async (
   passwordAgain,
   type
 ) => {
-  if (await isUsernameExists(username)) return false;
-  if (!isPasswordsSimilar(password, passwordAgain)) return false;
-  if (!isValidEmail(email)) return false;
+  if (await isUsernameExists(username)) {
+    throw new ValidationError("שם המשתמש כבר קיים במערכת", 409);
+  }
+  if (!isPasswordsSimilar(password, passwordAgain)) return;
+  if (!isValidEmail(email)) {
+    throw new ValidationError("אנא הזן מייל תקין", 400);
+  }
   if (!type) return false;
 
   await createUserDB(username, email, password, type);
@@ -213,7 +218,7 @@ export const getUserWithExtraInfo = async (username) => {
       formattedReports[dayMonth].defender += 1;
       if (report.winner === "defender") {
         formattedWinLose[dayMonth].wins += 1;
-      } else if(report.winner === "attacker") {
+      } else if (report.winner === "attacker") {
         formattedWinLose[dayMonth].loses += 1;
       }
     }

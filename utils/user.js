@@ -6,11 +6,7 @@ export const isUsernameExists = async (username) => {
 };
 
 export const isPasswordsSimilar = (password, passwordAgain) => {
-  if (password === passwordAgain) {
-    return true;
-  } else {
-    return false;
-  }
+  return password === passwordAgain ? true : false;
 };
 
 export const isValidEmail = (email) => {

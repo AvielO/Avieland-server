@@ -82,7 +82,8 @@ router.post("/", async (req, res) => {
     await createUser(username, email, password, passwordAgain, type);
     res.sendStatus(200);
   } catch (err) {
-    res.status(500).send({ message: "המשתמש לא נוצר" });
+    console.log(err);
+    res.status(err.statusCode).send({ message: err.message });
   }
 });
 
