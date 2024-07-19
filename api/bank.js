@@ -17,7 +17,7 @@ router.post("/:username/deposit", async (req, res) => {
     );
     res.status(200).send({ updatedResources, updatedBankResources });
   } catch (err) {
-    res.status(500).send({ message: "לא היה ניתן להפקיד את הכסף" });
+    res.status(err.statusCode).send({ message: err.message });
   }
 });
 
@@ -35,7 +35,7 @@ router.post("/:username/withdraw", async (req, res) => {
     );
     res.status(200).send({ updatedResources, updatedBankResources });
   } catch (err) {
-    res.status(500).send({ message: "בעיה בהבאת הנתונים" });
+    res.status(err.statusCode).send({ message: err.message });
   }
 });
 
