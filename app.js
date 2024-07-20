@@ -43,7 +43,12 @@ mongoose.connect(mongoURL);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL, // Replace with your frontend origin
+    credentials: true, // Allow cookies to be sent with requests
+  })
+);
 
 app.use("/auth", authAPI);
 app.use("/users", usersAPI);
