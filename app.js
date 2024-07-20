@@ -24,6 +24,8 @@ import { calculateTimeUntilNextFiveMinute } from "./utils/general.js";
 import { getAllUsers, getUserByUsername } from "./db/users.js";
 import User from "./schemas/user.js";
 
+import cookieParser from "cookie-parser";
+
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
 const port = process.env.APP_PORT;
@@ -40,6 +42,7 @@ mongoose.connect(mongoURL);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cors());
 
 app.use("/auth", authAPI);
