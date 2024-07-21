@@ -61,8 +61,6 @@ app.use("/soliders", authMiddleware, solidersAPI);
 app.use("/bank", authMiddleware, bankAPI);
 app.use("/chats", authMiddleware, chatAPI);
 
-io.use(authSocketMiddleware);
-
 const usersInRoom = {};
 
 const socketIDToUser = {};
@@ -76,6 +74,7 @@ io.on("connection", (socket) => {
 
     userToSocketID[username] = socket.id;
     socketIDToUser[socket.id] = username;
+
     if (!usersInRoom[username]) {
       usersInRoom[username] = {};
     }
@@ -100,6 +99,8 @@ io.on("connection", (socket) => {
 
   socket.on("leave chat", (room) => {
     socket.leave(room);
+    console.log(room, socket.id);
+    console.log(usersInRoom[room]);
     if (usersInRoom[room]) {
       delete usersInRoom[room][socket.id]; // Remove user from tracking
     }
@@ -116,6 +117,7 @@ io.on("connection", (socket) => {
     const innerKey = Object.keys(usersInRoom[room]).find(
       (innerKey) => usersInRoom[room][innerKey] === room
     );
+
     if (innerKey) {
       io.to(innerKey).emit("message accepted", {
         sender: user,
@@ -136,6 +138,10 @@ io.on("connection", (socket) => {
 
     delete socketIDToUser[socket.id];
     delete userToSocketID[username];
+
+    Object.keys(usersInRoom).forEach((key) => {
+      delete usersInRoom[key][socket.id];
+    });
     console.log("user disconnected");
   });
 });
