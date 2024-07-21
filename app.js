@@ -25,6 +25,7 @@ import { getAllUsers, getUserByUsername } from "./db/users.js";
 import User from "./schemas/user.js";
 
 import cookieParser from "cookie-parser";
+import { authMiddleware } from "./utils/authMiddleware.js";
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -51,13 +52,13 @@ app.use(
 );
 
 app.use("/auth", authAPI);
-app.use("/users", usersAPI);
-app.use("/store", storeAPI);
-app.use("/reports", reportAPI);
-app.use("/workers", workersAPI);
-app.use("/soliders", solidersAPI);
-app.use("/bank", bankAPI);
-app.use("/chats", chatAPI);
+app.use("/users", authMiddleware, usersAPI);
+app.use("/store", authMiddleware, storeAPI);
+app.use("/reports", authMiddleware, reportAPI);
+app.use("/workers", authMiddleware, workersAPI);
+app.use("/soliders", authMiddleware, solidersAPI);
+app.use("/bank", authMiddleware, bankAPI);
+app.use("/chats", authMiddleware, chatAPI);
 
 const usersInRoom = {};
 

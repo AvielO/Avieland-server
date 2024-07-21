@@ -3,10 +3,11 @@ import { isUserCredentialsCorrect } from "../app/authActions.js";
 import { passwordValidation, usernameValidation } from "../utils/general.js";
 import ValidationError from "../utils/errorsTypes.js";
 import jwt from "jsonwebtoken";
+import { authMiddleware } from "../utils/authMiddleware.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const { username, password } = req.query;
     usernameValidation(username);
@@ -22,13 +23,18 @@ router.get("/", async (req, res) => {
         secure: true,
         sameSite: "Strict",
       });
-      res.sendStatus(200);
+      res.status(200).send({ message: "Login successful", user: req.user });
     } else {
       throw new ValidationError("שם המשתמש או הסיסמה אינם נכונים", 404);
     }
   } catch (err) {
     res.status(err.statusCode).send({ message: err.message });
   }
+});
+
+router.get("/logout", async (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logout successful" });
 });
 
 export default router;
