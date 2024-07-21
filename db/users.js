@@ -6,6 +6,19 @@ export const getAllUsers = async () => {
   return users;
 };
 
+export const getUsersByPage = async (page, limit = 10) => {
+  const skip = (page - 1) * limit;
+  const users = await User.find().skip(skip).limit(limit);
+  return users;
+};
+
+export const getPagesAmount = async () => {
+  const usersInPage = 10;
+  const totalUsers = await User.countDocuments();
+  const totalPages = Math.ceil(totalUsers / usersInPage);
+  return totalPages;
+};
+
 export const getUserByUsername = async (username) => {
   const user = await User.findOne({ username });
   return user;

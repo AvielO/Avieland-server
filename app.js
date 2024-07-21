@@ -98,8 +98,6 @@ io.on("connection", (socket) => {
 
   socket.on("leave chat", (room) => {
     socket.leave(room);
-    console.log(room, socket.id);
-    console.log(usersInRoom[room]);
     if (usersInRoom[room]) {
       delete usersInRoom[room][socket.id]; // Remove user from tracking
     }

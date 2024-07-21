@@ -26,11 +26,12 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/leaderboard", authMiddleware, async (req, res) => {
+router.get("/leaderboard/:page", authMiddleware, async (req, res) => {
   try {
-    const leaderboardUsers = await getLeaderboardUsers();
-    if (leaderboardUsers) {
-      res.status(200).send(leaderboardUsers);
+    const { page } = req.params;
+    const leaderboardInfo = await getLeaderboardUsers(page);
+    if (leaderboardInfo) {
+      res.status(200).send(leaderboardInfo);
     } else {
       res.status(404).send({ message: "שגיאה בהבאת המשתמשים" });
     }

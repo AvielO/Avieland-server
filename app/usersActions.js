@@ -9,7 +9,13 @@ import {
   calculateAttackPowerLevel,
   calculateDefensePowerLevel,
 } from "../utils/general.js";
-import { getAllUsers, createUserDB, getUserByUsername } from "../db/users.js";
+import {
+  getAllUsers,
+  createUserDB,
+  getUserByUsername,
+  getUsersByPage,
+  getPagesAmount,
+} from "../db/users.js";
 import Report from "../schemas/report.js";
 import { v4 as generateID } from "uuid";
 import { getReportsByUsername } from "../db/reports.js";
@@ -21,10 +27,11 @@ import ValidationError from "../utils/errorsTypes.js";
 
 const STEAL_PERCENTAGE = 0.15;
 
-export const getLeaderboardUsers = async () => {
-  const users = await getAllUsers();
-  const formatedUsers = formatUserData(users);
-  return formatedUsers;
+export const getLeaderboardUsers = async (page) => {
+  const users = await getUsersByPage(page);
+  const totalPages = await getPagesAmount();
+  const leaderboardUsers = formatUserData(users);
+  return { leaderboardUsers, pages: totalPages };
 };
 
 export const getUserInfo = async (username) => {
