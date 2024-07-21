@@ -88,7 +88,7 @@ router.post("/", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "Lax",
+      sameSite: "None",
     });
     res.status(200).send({ message: "Register successful", user: req.user });
   } catch (err) {
