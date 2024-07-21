@@ -8,10 +8,12 @@ import {
   getUserWithExtraInfo,
 } from "../app/usersActions.js";
 import { getAllUsers, getUserByUsername } from "../db/users.js";
+import { authMiddleware } from "../utils/authMiddleware.js";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const allUsers = await getAllUsers();
     if (allUsers) {
@@ -24,7 +26,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/leaderboard", async (req, res) => {
+router.get("/leaderboard", authMiddleware, async (req, res) => {
   try {
     const leaderboardUsers = await getLeaderboardUsers();
     if (leaderboardUsers) {
@@ -37,7 +39,7 @@ router.get("/leaderboard", async (req, res) => {
   }
 });
 
-router.get("/:username", async (req, res) => {
+router.get("/:username", authMiddleware, async (req, res) => {
   try {
     const { username } = req.params;
     const userExpended = await getUserWithExtraInfo(username);
@@ -47,7 +49,7 @@ router.get("/:username", async (req, res) => {
   }
 });
 
-router.get("/:username/resources", async (req, res) => {
+router.get("/:username/resources", authMiddleware, async (req, res) => {
   try {
     const { username } = req.params;
     const user = await getUserByUsername(username);
@@ -62,7 +64,7 @@ router.get("/:username/resources", async (req, res) => {
   }
 });
 
-router.get("/:username/info", async (req, res) => {
+router.get("/:username/info", authMiddleware, async (req, res) => {
   try {
     const { username } = req.params;
     const user = await getUserInfo(username);
@@ -80,27 +82,39 @@ router.post("/", async (req, res) => {
   try {
     const { username, email, password, passwordAgain, type } = req.body;
     await createUser(username, email, password, passwordAgain, type);
-    res.sendStatus(200);
+    const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+    res.status(200).send({ message: "Register successful", user: req.user });
   } catch (err) {
     console.log(err);
     res.status(err.statusCode).send({ message: err.message });
   }
 });
 
-router.post("/:attackerUserame/attack/:targetUserame", async (req, res) => {
-  try {
-    const { attackerUserame, targetUserame } = req.params;
-    const [reportID, updatedResources] = await attackUser(
-      attackerUserame,
-      targetUserame
-    );
-    res.status(200).send({ reportID, updatedResources });
-  } catch (err) {
-    res.status(500).send({ message: "ההתקפה לא קרתה" });
+router.post(
+  "/:attackerUserame/attack/:targetUserame",
+  authMiddleware,
+  async (req, res) => {
+    try {
+      const { attackerUserame, targetUserame } = req.params;
+      const [reportID, updatedResources] = await attackUser(
+        attackerUserame,
+        targetUserame
+      );
+      res.status(200).send({ reportID, updatedResources });
+    } catch (err) {
+      res.status(500).send({ message: "ההתקפה לא קרתה" });
+    }
   }
-});
+);
 
-router.get("/:username/reports", async (req, res) => {
+router.get("/:username/reports", authMiddleware, async (req, res) => {
   try {
     const { username } = req.params;
     const reports = await getUserReports(username);
@@ -110,7 +124,7 @@ router.get("/:username/reports", async (req, res) => {
   }
 });
 
-router.get("/:username/bank", async (req, res) => {
+router.get("/:username/bank", authMiddleware, async (req, res) => {
   try {
     const { username } = req.params;
     const { bank } = await getUserByUsername(username);

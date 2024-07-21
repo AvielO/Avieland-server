@@ -52,7 +52,7 @@ app.use(
 );
 
 app.use("/auth", authAPI);
-app.use("/users", authMiddleware, usersAPI);
+app.use("/users", usersAPI);
 app.use("/store", authMiddleware, storeAPI);
 app.use("/reports", authMiddleware, reportAPI);
 app.use("/workers", authMiddleware, workersAPI);

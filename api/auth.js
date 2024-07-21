@@ -7,7 +7,7 @@ import { authMiddleware } from "../utils/authMiddleware.js";
 
 const router = Router();
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { username, password } = req.query;
     usernameValidation(username);
@@ -32,7 +32,11 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/logout", async (req, res) => {
+router.get("/validate-token", authMiddleware, (req, res) => {
+  res.status(200).json({ user: req.user });
+});
+
+router.get("/logout", authMiddleware, async (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logout successful" });
 });
