@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: "Lax",
       });
       res.status(200).send({ message: "Login successful", user: req.user });
     } else {

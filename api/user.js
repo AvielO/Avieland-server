@@ -88,11 +88,10 @@ router.post("/", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "Strict",
+      sameSite: "Lax",
     });
     res.status(200).send({ message: "Register successful", user: req.user });
   } catch (err) {
-    console.log(err);
     res.status(err.statusCode).send({ message: err.message });
   }
 });
