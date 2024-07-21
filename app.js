@@ -26,6 +26,7 @@ import User from "./schemas/user.js";
 
 import cookieParser from "cookie-parser";
 import { authMiddleware } from "./utils/authMiddleware.js";
+import { authSocketMiddleware } from "./utils/authSocketMiddleware.js"; // Import the new socket auth middleware
 
 const mongoURL =
   "mongodb+srv://AvielO:1tdKQT3VeDTL7IvD@avieland.zr6f7iy.mongodb.net/?retryWrites=true&w=majority&appName=Avieland";
@@ -59,6 +60,8 @@ app.use("/workers", authMiddleware, workersAPI);
 app.use("/soliders", authMiddleware, solidersAPI);
 app.use("/bank", authMiddleware, bankAPI);
 app.use("/chats", authMiddleware, chatAPI);
+
+io.use(authSocketMiddleware);
 
 const usersInRoom = {};
 
