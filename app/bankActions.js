@@ -74,7 +74,7 @@ export const withdrawResources = async (
     case "copper": {
       if (copperToWithdraw <= 0)
         throw new ValidationError(
-          "כמות כסף למשיכה אמורה להכיל מספר גדול מ0",
+          "כמות הנחושת למשיכה אמורה להכיל מספר גדול מ0",
           400
         );
       if (user.bank.copper >= copperToWithdraw) {
@@ -88,7 +88,7 @@ export const withdrawResources = async (
     case "silver": {
       if (silverToWithdraw <= 0)
         throw new ValidationError(
-          "כמות כסף למשיכה אמורה להכיל מספר גדול מ0",
+          "כמות הכסף למשיכה אמורה להכיל מספר גדול מ0",
           400
         );
       if (user.bank.silver >= silverToWithdraw) {
@@ -102,7 +102,7 @@ export const withdrawResources = async (
     case "gold": {
       if (goldToWithdraw <= 0)
         throw new ValidationError(
-          "כמות כסף למשיכה אמורה להכיל מספר גדול מ0",
+          "כמות הזהב למשיכה אמורה להכיל מספר גדול מ0",
           400
         );
       if (user.bank.gold >= goldToWithdraw) {
