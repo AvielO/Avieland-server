@@ -18,7 +18,11 @@ import {
 } from "../db/users.js";
 import Report from "../schemas/report.js";
 import { v4 as generateID } from "uuid";
-import { getReportsByUsername, getTotalReportsAmount } from "../db/reports.js";
+import {
+  getReportsByUsername,
+  getTotalReportsAmount,
+  getUserAllReports,
+} from "../db/reports.js";
 import {
   resourceTranslationMap,
   workersResourcesMap,
@@ -162,10 +166,9 @@ export const getUserReportsByPage = async (username, page) => {
 };
 
 export const getUserWithExtraInfo = async (username) => {
-  const userWithExtraDetails = {};
   const user = await getUserByUsername(username);
   if (!user) return;
-  const { resources, weapons, soliders, bank, workers } = user.toObject();
+  const { weapons, soliders, bank, workers } = user.toObject();
 
   //Workers
   const formattedResources = Object.keys(workers)
@@ -197,7 +200,7 @@ export const getUserWithExtraInfo = async (username) => {
   //reports amount
   const formattedReports = {};
   const formattedWinLose = {};
-  const reports = await getUserReports(username);
+  const reports = await getUserAllReports(username);
 
   reports.forEach((report) => {
     const date = new Date(report.time);

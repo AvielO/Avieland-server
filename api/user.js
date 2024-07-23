@@ -42,6 +42,7 @@ router.get("/leaderboard/:page", authMiddleware, async (req, res) => {
 
 router.get("/:username", authMiddleware, async (req, res) => {
   try {
+    console.log("??")
     const { username } = req.params;
     const userExpended = await getUserWithExtraInfo(username);
     res.status(200).send(userExpended);
