@@ -4,7 +4,7 @@ import {
   createUser,
   getLeaderboardUsers,
   getUserInfo,
-  getUserReports,
+  getUserReportsByPage,
   getUserWithExtraInfo,
 } from "../app/usersActions.js";
 import { getAllUsers, getUserByUsername } from "../db/users.js";
@@ -114,11 +114,11 @@ router.post(
   }
 );
 
-router.get("/:username/reports", authMiddleware, async (req, res) => {
+router.get("/:username/reports/:page", authMiddleware, async (req, res) => {
   try {
-    const { username } = req.params;
-    const reports = await getUserReports(username);
-    res.status(200).send({ reports });
+    const { username, page } = req.params;
+    const [reports, totalPages] = await getUserReportsByPage(username, page);
+    res.status(200).send({ reports, totalPages });
   } catch (err) {
     res.status(500).send({ message: "לא ניתן לקבל את הדוחות" });
   }

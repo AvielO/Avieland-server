@@ -18,7 +18,7 @@ import {
 } from "../db/users.js";
 import Report from "../schemas/report.js";
 import { v4 as generateID } from "uuid";
-import { getReportsByUsername } from "../db/reports.js";
+import { getReportsByUsername, getTotalReportsAmount } from "../db/reports.js";
 import {
   resourceTranslationMap,
   workersResourcesMap,
@@ -152,12 +152,13 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   return [reportID, attacker.resources];
 };
 
-export const getUserReports = async (username) => {
+export const getUserReportsByPage = async (username, page) => {
   const user = await getUserByUsername(username);
   if (!user) return;
 
-  const reports = await getReportsByUsername(username);
-  return reports;
+  const reports = await getReportsByUsername(username, page);
+  const totalPages = await getTotalReportsAmount(username);
+  return [reports, totalPages];
 };
 
 export const getUserWithExtraInfo = async (username) => {
