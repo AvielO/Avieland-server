@@ -90,6 +90,7 @@ router.post("/", async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      expires: new Date(Date.now() + 3600000),
     });
     res.status(200).send({ message: "Register successful", user: req.user });
   } catch (err) {

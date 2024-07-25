@@ -21,7 +21,8 @@ router.get("/", async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "None",
+        expires: new Date(Date.now() + 3600000)
       });
       res.status(200).send({ message: "Login successful", user: req.user });
     } else {
