@@ -164,6 +164,8 @@ setInterval(async () => {
       user.resources.silver += silverToAdd;
       user.resources.gold += goldToAdd;
 
+      user.turns += 2;
+
       return {
         updateOne: {
           filter: { _id: user._id },

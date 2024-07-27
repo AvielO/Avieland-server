@@ -44,6 +44,10 @@ const UserSchema = new Schema({
     type: ResourcesSchema,
     required: true,
   },
+  turns: {
+    type: Number,
+    required: true,
+  },
   group: {
     type: String,
     required: false,

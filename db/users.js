@@ -51,6 +51,7 @@ export const createUserDB = async (username, email, password, type) => {
       diamond: 0,
     },
     soliders: 35,
+    turns: 20,
     group: "",
   });
   await userSchema.save();
