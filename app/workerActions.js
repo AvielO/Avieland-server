@@ -49,7 +49,7 @@ export const hireWorkers = async (
     await user.save();
 
     const updatedWorkersQuantity = {
-      ...user.workers,
+      ...user.workers.toObject(),
       copper: user.workers.copper,
       silver: user.workers.silver,
       gold: user.workers.gold,
