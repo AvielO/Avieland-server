@@ -67,6 +67,9 @@ export const attackUser = async (attackerUsername, targetUsername) => {
   const attacker = await getUserByUsername(attackerUsername);
   const defender = await getUserByUsername(targetUsername);
 
+  if (attacker.turns <= 0)
+    throw new ValidationError("אין לך מספיק תורות לבצע את התקיפה", 400);
+
   const attackerWeaponDict = convertDbMapToDict(attacker.weapons);
   const defenderWeaponDict = convertDbMapToDict(defender.weapons);
 
@@ -132,6 +135,7 @@ export const attackUser = async (attackerUsername, targetUsername) => {
       silver: attacker.resources.silver + stolenSilver,
       gold: attacker.resources.gold + stolenGold,
     };
+    attacker.turns -= 1;
 
     defender.resources = {
       ...defender.resources,
@@ -269,12 +273,15 @@ export const sendPasswordToUser = async (username, email) => {
   const user = await getUserByUsername(username);
   if (!user) throw ValidationError("שם משתמש שהזנת אינו קיים במערכת", 400);
   if (user.email !== email)
-    throw ValidationError("שם המשתמש שנבחר אינו מתאים לאימייל", 400);
+    throw new ValidationError("שם המשתמש שנבחר אינו מתאים לאימייל", 400);
   transporter.sendMail(
     getMailMessage(username, user.password, email),
     (error, info) => {
       if (error) {
-        throw ValidationError(`לא היה ניתן לשלוח את המייל לדוא"ל המבוקש`, 500);
+        throw new ValidationError(
+          `לא היה ניתן לשלוח את המייל לדוא"ל המבוקש`,
+          500
+        );
       }
     }
   );
