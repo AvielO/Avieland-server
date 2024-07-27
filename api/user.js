@@ -6,6 +6,7 @@ import {
   getUserInfo,
   getUserReportsByPage,
   getUserWithExtraInfo,
+  sendPasswordToUser,
 } from "../app/usersActions.js";
 import { getAllUsers, getUserByUsername } from "../db/users.js";
 import { authMiddleware } from "../utils/authMiddleware.js";
@@ -76,6 +77,17 @@ router.get("/:username/info", authMiddleware, async (req, res) => {
     }
   } catch (err) {
     res.status(500).send({ message: "בעיה בהבאת הנתונים" });
+  }
+});
+
+router.post("/:username/forgot-password", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { email } = req.body;
+
+    await sendPasswordToUser(username, email);
+  } catch (err) {
+    res.status(err.statusCode).send({ message: err.message });
   }
 });
 

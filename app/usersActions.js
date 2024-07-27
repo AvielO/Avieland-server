@@ -264,3 +264,11 @@ export const getUserWithExtraInfo = async (username) => {
     bankDistribution: arrayFormattedBank,
   };
 };
+
+export const sendPasswordToUser = async (username, email) => {
+  const user = await getUserByUsername(username);
+  if (!user) throw ValidationError("שם משתמש שהזנת אינו קיים במערכת", 400);
+  if (user.email !== email)
+    throw ValidationError("שם המשתמש שנבחר אינו מתאים לאימייל", 400);
+  
+};
