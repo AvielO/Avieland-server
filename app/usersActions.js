@@ -10,7 +10,6 @@ import {
   calculateDefensePowerLevel,
 } from "../utils/general.js";
 import {
-  getAllUsers,
   createUserDB,
   getUserByUsername,
   getUsersByPage,
@@ -28,6 +27,7 @@ import {
   workersResourcesMap,
 } from "../utils/mapping.js";
 import ValidationError from "../utils/errorsTypes.js";
+import { getMailMessage, transporter } from "../utils/mailSender.js";
 
 const STEAL_PERCENTAGE = 0.15;
 
@@ -270,5 +270,12 @@ export const sendPasswordToUser = async (username, email) => {
   if (!user) throw ValidationError("שם משתמש שהזנת אינו קיים במערכת", 400);
   if (user.email !== email)
     throw ValidationError("שם המשתמש שנבחר אינו מתאים לאימייל", 400);
-  
+  transporter.sendMail(
+    getMailMessage(username, user.password, email),
+    (error, info) => {
+      if (error) {
+        throw ValidationError(`לא היה ניתן לשלוח את המייל לדוא"ל המבוקש`, 500);
+      }
+    }
+  );
 };

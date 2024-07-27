@@ -86,6 +86,7 @@ router.post("/:username/forgot-password", async (req, res) => {
     const { email } = req.body;
 
     await sendPasswordToUser(username, email);
+    res.status(200).send({ message: "Mail sent successful" });
   } catch (err) {
     res.status(err.statusCode).send({ message: err.message });
   }
