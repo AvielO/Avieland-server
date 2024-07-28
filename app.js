@@ -164,7 +164,7 @@ setInterval(async () => {
       user.resources.silver += silverToAdd;
       user.resources.gold += goldToAdd;
 
-      user.turns += 2;
+      user.turns += +2;
 
       return {
         updateOne: {
@@ -183,6 +183,7 @@ setInterval(async () => {
         silver: user.resources.silver,
         gold: user.resources.gold,
         diamond: user.resources.diamond,
+        turns: user.turns,
       });
     });
 

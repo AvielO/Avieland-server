@@ -57,7 +57,7 @@ router.get("/:username/resources", authMiddleware, async (req, res) => {
     const user = await getUserByUsername(username);
 
     if (user) {
-      res.status(200).send({ resources: user.resources });
+      res.status(200).send({ resources: user.resources, turns: user.turns });
     } else {
       res.status(404).send({ message: "המשתמש אינו קיים" });
     }

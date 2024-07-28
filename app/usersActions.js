@@ -135,7 +135,7 @@ export const attackUser = async (attackerUsername, targetUsername) => {
       silver: attacker.resources.silver + stolenSilver,
       gold: attacker.resources.gold + stolenGold,
     };
-    attacker.turns -= 1;
+    attacker.turns -= +1;
 
     defender.resources = {
       ...defender.resources,
